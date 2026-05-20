@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #8fb996; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .panel { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); width: 400px; }
+        h1 { color: #4a5d4e; margin-top: 0; font-weight: 300; }
+        .patient-link { display: block; padding: 15px; margin: 10px 0; background: #f0f4f1; border-radius: 10px; text-decoration: none; color: #4a5d4e; font-weight: bold; transition: 0.2s; border: 1px solid transparent; }
+        .patient-link:hover { background: #8fb996; color: white; transform: translateX(10px); }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h1>Patient Registry</h1>
+        <p style="color: #888;">Select a patient to view real-time explainable analytics.</p>
+        {% for p in patients %}
+            <a href="/patient/{{ p }}" class="patient-link">👤 Patient ID: {{ p }}</a>
+        {% endfor %}
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <a href="/" style="font-size: 12px; color: #aaa; text-decoration: none;">Logout</a>
+    </div>
+</body>
+</html>

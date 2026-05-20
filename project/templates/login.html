@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CareFlow - Login</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
+        .container { display: flex; height: 100vh; }
+        .side { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.3s; }
+        .doctor-side { background: #8fb996; color: white; border-right: 2px solid rgba(255,255,255,0.2); }
+        .patient-side { background: #fcfbf7; color: #4a5d4e; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 320px; }
+        .doctor-side .card { background: rgba(255,255,255,0.1); color: white; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        h1 { margin-bottom: 20px; font-weight: 300; }
+        input { padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; width: 90%; font-size: 14px; }
+        button { padding: 12px 30px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .doc-btn { background: white; color: #8fb996; }
+        .pat-btn { background: #8fb996; color: white; }
+        .doc-btn:hover { background: #eef5f0; }
+        .pat-btn:hover { background: #7aa380; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="side doctor-side">
+            <div class="card">
+                <h1>Doctor Portal</h1>
+                <form action="/login" method="post">
+                    <input type="text" name="username" placeholder="Username (doctor)" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit" class="doc-btn">Enter Portal</button>
+                </form>
+            </div>
+        </div>
+        <div class="side patient-side">
+            <div class="card">
+                <h1>Patient Portal</h1>
+                <form action="/login" method="post">
+                    <input type="text" name="username" placeholder="Username (patient)" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit" class="pat-btn">View My Health</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
