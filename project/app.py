@@ -61,7 +61,7 @@ models = {
 async def index_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/index")
+@app.get("/index")
 async def index(request: Request):
     form_data = await request.form()
     username = str(form_data.get("username")).strip().lower()
