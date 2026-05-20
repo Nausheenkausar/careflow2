@@ -58,11 +58,11 @@ models = {
 # --- ROUTES ---
 
 @app.get("/", response_class=HTMLResponse)
-async def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+async def index_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/login")
-async def login(request: Request):
+@app.post("/index")
+async def index(request: Request):
     form_data = await request.form()
     username = str(form_data.get("username")).strip().lower()
     password = str(form_data.get("password")).strip()
