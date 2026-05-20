@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI, Request, Form
@@ -5,21 +6,22 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sklearn.ensemble import RandomForestRegressor
 import shap
-import os
+from mangum import Mangum  # Required for Vercel Serverless routing
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 
-# Define the path to your folder once here
-ARCHIVE_PATH = r"C:\Users\Nausheen\Desktop\project\archive"
+# --- VERCEL-SAFE DYNAMIC PATH ROUTING ---
+# Resolves path differences between local Windows testing and Linux Vercel servers
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+ARCHIVE_PATH = os.path.join(BASE_DIR, "archive")
 
 # --- DATA PREPROCESSING & MODEL TRAINING ---
 def train_model_on_cgm(filename):
     """
-    Handles large Kaggle CGM files. 
+    Handles large Kaggle CGM files natively using cloud-safe relative paths.
     Uses Temporal Feature Engineering (Lags) instead of Heart Rate.
     """
-    # Combine folder path with the filename
     file_path = os.path.join(ARCHIVE_PATH, filename)
     
     print(f"Loading and Training on {file_path}...")
@@ -49,7 +51,6 @@ def train_model_on_cgm(filename):
     return model, explainer
 
 # Initialize models
-# These will now look inside C:\Users\Nausheen\Desktop\project\archive\
 models = {
     "P-461": train_model_on_cgm("g4_Patient_461_3.csv"),
     "P-056": train_model_on_cgm("g5_Patient_56_10.csv")
@@ -61,16 +62,19 @@ models = {
 async def index_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/index")
-async def index(request: Request):
-    form_data = await request.form()
-    username = str(form_data.get("username")).strip().lower()
-    password = str(form_data.get("password")).strip()
+# FIXED: Swapped to @app.post and explicitly bound Form parameters
+@app.post("/index")
+async def index(
+    username: str = Form(...), 
+    password: str = Form(...)
+):
+    processed_username = username.strip().lower()
+    processed_password = password.strip()
     
-    if username == "doctor" and password == "doctor123":
+    if processed_username == "doctor" and processed_password == "doctor123":
         return RedirectResponse(url="/doctor", status_code=303)
     
-    if username == "patient" and password == "patient123":
+    if processed_username == "patient" and processed_password == "patient123":
         return RedirectResponse(url="/patient/P-461", status_code=303)
     
     return HTMLResponse("Invalid Credentials. <a href='/'>Try again</a>")
@@ -114,6 +118,9 @@ async def get_data(patient_id: str, row: int):
             "trend_impact": round(float(shap_values[0][2]), 2)
         }
     }
+
+# --- VERCEL ASG HANDLER ENTRYPOINT ---
+handler = Mangum(app)
 
 if __name__ == "__main__":
     import uvicorn
